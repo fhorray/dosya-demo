@@ -1,28 +1,18 @@
 import { useDosya } from '@fhorray/dosya';
+import {
+  DosyaGrid,
+  DosyaTree,
+  Filters,
+  FolderSelector,
+  Header,
+  UploadFileButton,
+} from '@fhorray/dosya/ui';
 import { UploadIcon } from 'lucide-react';
-import { useEffect } from 'react';
-import { DosyaTree } from './components/dosya-tree';
-import { Header } from './components/grid/header';
-import { Filters } from './components/filters';
-import { DosyaGrid } from './components/grid';
 
 function App() {
-  const { files, folders, context, uploader, filters } = useDosya();
+  const { context, filters, folders } = useDosya();
 
-  // useeffect to set images
-  useEffect(() => {
-    // fetch images
-    const fetchData = async () => {
-      files.setList({
-        folder: context.config.defaultFolder,
-        limit: 10,
-        page: 1,
-      }),
-        folders.setList('root');
-    };
-
-    fetchData();
-  }, []);
+  console.log(folders.current);
 
   return (
     <main className="flex gap-4 w-full">
@@ -35,19 +25,20 @@ function App() {
           </div>
         )}
 
-        <button
-          className="w-full rounded-md  text-white"
-          onClick={() => {
-            uploader.toggle();
-          }}
-        >
+        <UploadFileButton>
           <UploadIcon />
-          Upload File
-        </button>
+          New File
+        </UploadFileButton>
+
+        <FolderSelector
+          onSelect={(folder) => {
+            folders.setCurrent(folder);
+          }}
+        />
         <DosyaTree />
       </aside>
 
-      <main className="w-full max-w-[80%] ml-[20%] flex flex-col">
+      <section className="w-full max-w-[80%] ml-[20%] flex flex-col">
         {/* HEADER */}
         <Header
           currentView={context.config.viewMode.default}
@@ -64,7 +55,7 @@ function App() {
         <div className="w-full p-4">
           <DosyaGrid />
         </div>
-      </main>
+      </section>
     </main>
   );
 }
